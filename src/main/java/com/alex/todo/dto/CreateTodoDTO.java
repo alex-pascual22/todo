@@ -5,9 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ToDoDTO {
+public class CreateTodoDTO {
     private String title;
     private String description;
-    private String status;
     private String details;
 }
