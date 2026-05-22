@@ -1,6 +1,7 @@
 package com.alex.todo.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ public class TodoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="TODO_ID")
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "TODO_TITLE", length = 20)
