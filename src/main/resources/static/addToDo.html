@@ -2,16 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css"/>
+    <script src="script.js" defer></script>
     <title>Add To Do</title>
 </head>
 <body>
-<div>
-    <h1>Add To Do</h1>
+<!--Header-->
+<div class="header">
+    <div>
+        <h1><a href="index.html">Simple To Do App</a></h1>
+    </div>
+    <div>
+        <button onclick="window.location.href='/addToDo.html'">Add ToDo</button>
+    </div>
 </div>
 
 <div>
-    <form id="todoForm">
+    <h2>Add To Do</h2>
+</div>
+
+<div>
+    <form id="todoForm" class="formBox">
         <div>
             <label>Title: </label>
             <input type="text" id="title"/>
