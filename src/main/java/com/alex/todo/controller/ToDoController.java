@@ -7,10 +7,7 @@ import com.alex.todo.service.ToDoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
-import static java.util.Objects.isNull;
 
 @RestController
 @RequestMapping("/api/v1/todo")
@@ -24,42 +21,42 @@ public class ToDoController {
 
     @PostMapping("/add")
     public ResponseEntity<ResponseTodoDTO> add(@RequestBody CreateTodoDTO createTodoDTO){
-        ResponseTodoDTO responseTodoDTO;
-        responseTodoDTO = toDoService.add(createTodoDTO);
+        ResponseTodoDTO responseTodoDTO = toDoService.add(createTodoDTO);
         return new ResponseEntity<>(responseTodoDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseTodoDTO> update(@PathVariable Long id, @RequestBody UpdateToDoDTO updateToDoDTO){
-        ResponseTodoDTO responseTodoDTO;
-        responseTodoDTO = toDoService.update(id, updateToDoDTO);
+        ResponseTodoDTO responseTodoDTO = toDoService.update(id, updateToDoDTO);
 
-        if(!isNull(responseTodoDTO)){
-            return new ResponseEntity<>(responseTodoDTO, HttpStatus.CREATED);
+        if(responseTodoDTO != null){
+            return new ResponseEntity<>(responseTodoDTO, HttpStatus.OK);
         }
+
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id){
-        Boolean isDeleted = toDoService.delete(id);
+        boolean isDeleted = toDoService.delete(id);
+
         if(isDeleted){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/")
     public List<ResponseTodoDTO> getAll(){
-        List<ResponseTodoDTO> responseTodoDTOList = toDoService.getAll();
-        return responseTodoDTOList;
+        return toDoService.getAll();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseTodoDTO> get(@PathVariable Long id){
         ResponseTodoDTO responseTodoDTO = toDoService.getTodoById(id);
-        if(!isNull(responseTodoDTO)){
+
+        if(responseTodoDTO != null){
             return new ResponseEntity<>(responseTodoDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
