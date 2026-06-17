@@ -32,7 +32,6 @@ public class ToDoController {
         if(responseTodoDTO != null){
             return new ResponseEntity<>(responseTodoDTO, HttpStatus.OK);
         }
-
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -43,7 +42,6 @@ public class ToDoController {
         if(isDeleted){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
