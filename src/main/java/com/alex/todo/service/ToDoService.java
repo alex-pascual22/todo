@@ -4,6 +4,7 @@ import com.alex.todo.dto.CreateTodoDTO;
 import com.alex.todo.dto.ResponseTodoDTO;
 import com.alex.todo.dto.UpdateToDoDTO;
 import com.alex.todo.entity.TodoEntity;
+import com.alex.todo.mapper.ToDoMapper;
 import com.alex.todo.repository.ToDoRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,56 +18,40 @@ import static java.util.Objects.isNull;
 public class ToDoService {
 
     private final ToDoRepository toDoRepository;
+    private final ToDoMapper toDoMapper;
 
-    public ToDoService(ToDoRepository toDoRepository){
+    public ToDoService(ToDoRepository toDoRepository, ToDoMapper toDoMapper){
         this.toDoRepository = toDoRepository;
+        this.toDoMapper = toDoMapper;
     }
 
     public ResponseTodoDTO add(CreateTodoDTO createTodoDTO){
-        TodoEntity todoEntity = new TodoEntity();
-        ResponseTodoDTO responseTodoDTO = new ResponseTodoDTO();
+        TodoEntity todoEntity;
+        ResponseTodoDTO responseTodoDTO;
 
         if(isNull(createTodoDTO.getTitle()) || createTodoDTO.getTitle().isBlank()){
             createTodoDTO.setTitle("Untitled");
         }
 
-        // Create Entity
-        todoEntity.setTitle(createTodoDTO.getTitle());
-        todoEntity.setDescription(createTodoDTO.getDescription());
+        todoEntity = toDoMapper.convertCreateDtoToEntity(createTodoDTO);
         todoEntity.setStatus("Not yet started");
-        todoEntity.setDetails(createTodoDTO.getDetails());
-
         todoEntity = toDoRepository.save(todoEntity);
 
-        responseTodoDTO.setId(todoEntity.getId());
-        responseTodoDTO.setTitle(todoEntity.getTitle());
-        responseTodoDTO.setDescription(todoEntity.getDescription());
-        responseTodoDTO.setStatus(todoEntity.getStatus());
-        responseTodoDTO.setDetails(todoEntity.getDetails());
-
+        responseTodoDTO = toDoMapper.convertEntityToResponseDto(todoEntity);
         return responseTodoDTO;
     }
 
     public ResponseTodoDTO update(Long id, UpdateToDoDTO updateToDoDTO){
-        // Check if to do id exists
+        // Check if to do exists
         Optional<TodoEntity> todoEntityOptional = toDoRepository.findById(id);
         if(todoEntityOptional.isPresent()){
-            // To Do exists, continue with the update
+            ResponseTodoDTO responseTodoDTO;
             TodoEntity todoEntity = todoEntityOptional.get();
-            todoEntity.setTitle(updateToDoDTO.getTitle());
-            todoEntity.setDescription(updateToDoDTO.getDescription());
-            todoEntity.setStatus(updateToDoDTO.getStatus());
-            todoEntity.setDetails(updateToDoDTO.getDetails());
 
+            todoEntity = toDoMapper.updateEntityFromDto(updateToDoDTO, todoEntity);
             todoEntity = toDoRepository.save(todoEntity);
 
-            ResponseTodoDTO responseTodoDTO = new ResponseTodoDTO();
-            responseTodoDTO.setId(todoEntity.getId());
-            responseTodoDTO.setTitle(todoEntity.getTitle());
-            responseTodoDTO.setDescription(todoEntity.getDescription());
-            responseTodoDTO.setStatus(todoEntity.getStatus());
-            responseTodoDTO.setDetails(todoEntity.getDetails());
-
+            responseTodoDTO = toDoMapper.convertEntityToResponseDto(todoEntity);
             return  responseTodoDTO;
         }
         return null;
@@ -76,11 +61,7 @@ public class ToDoService {
         // Check if to do id exists
         Optional<TodoEntity> todoEntityOptional = toDoRepository.findById(id);
         if(todoEntityOptional.isPresent()){
-            try{
-                toDoRepository.deleteById(id);
-            } catch(Exception e){
-                return false;
-            }
+            toDoRepository.deleteById(id);
             return true;
         }
         return false;
@@ -89,14 +70,9 @@ public class ToDoService {
     public List<ResponseTodoDTO> getAll(){
         List<ResponseTodoDTO> responseTodoDTOList = new ArrayList<>();
         Iterable<TodoEntity> todoEntityList = toDoRepository.findAll();
-        for(TodoEntity todo : todoEntityList){
-            ResponseTodoDTO responseTodoDTO = new ResponseTodoDTO();
-            responseTodoDTO.setId(todo.getId());
-            responseTodoDTO.setTitle(todo.getTitle());
-            responseTodoDTO.setDescription(todo.getDescription());
-            responseTodoDTO.setStatus(todo.getStatus());
-            responseTodoDTO.setDetails(todo.getDetails());
 
+        for(TodoEntity todo : todoEntityList){
+            ResponseTodoDTO responseTodoDTO = toDoMapper.convertEntityToResponseDto(todo);
             responseTodoDTOList.add(responseTodoDTO);
         }
         return responseTodoDTOList;
@@ -107,14 +83,7 @@ public class ToDoService {
         Optional<TodoEntity> todoEntityOptional = toDoRepository.findById(id);
         if(todoEntityOptional.isPresent()){
             TodoEntity todoEntity = todoEntityOptional.get();
-            ResponseTodoDTO responseTodoDTO = new ResponseTodoDTO();
-
-            responseTodoDTO.setId(todoEntity.getId());
-            responseTodoDTO.setTitle(todoEntity.getTitle());
-            responseTodoDTO.setDescription(todoEntity.getDescription());
-            responseTodoDTO.setStatus(todoEntity.getStatus());
-            responseTodoDTO.setDetails(todoEntity.getDetails());
-            return responseTodoDTO;
+            return toDoMapper.convertEntityToResponseDto(todoEntity);
         }
         return null;
     }
