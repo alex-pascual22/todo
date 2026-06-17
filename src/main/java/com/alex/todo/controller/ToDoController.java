@@ -41,10 +41,10 @@ public class ToDoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseTodoDTO> delete(@PathVariable Long id){
-        Boolean response = toDoService.delete(id);
-        if(response){
-            return new ResponseEntity<>(HttpStatus.FOUND);
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        Boolean isDeleted = toDoService.delete(id);
+        if(isDeleted){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -60,7 +60,7 @@ public class ToDoController {
     public ResponseEntity<ResponseTodoDTO> get(@PathVariable Long id){
         ResponseTodoDTO responseTodoDTO = toDoService.getTodoById(id);
         if(!isNull(responseTodoDTO)){
-            return new ResponseEntity<>(responseTodoDTO, HttpStatus.FOUND);
+            return new ResponseEntity<>(responseTodoDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
