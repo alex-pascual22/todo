@@ -1,173 +1,288 @@
-async function createTodo(){
-    // Read values from the page
-    const title = document.getElementById("title").value;
-    const description = document.getElementById("description").value;
-    const details = document.getElementById("details").value;
+const API_BASE = "/api/v1/todo";
 
-    // create to do object that matches CreateToDoDTO
-    const todo = {
-        title: title,
-        description: description,
-        details: details
-    }
+// Create
+async function createTodo() {
+    try {
+        const title = document.getElementById("title").value;
+        const description = document.getElementById("description").value;
+        const details = document.getElementById("details").value;
 
-    // Send POST request to SpringBoot
-    const response = await fetch("/api/v1/todo/add", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(todo)});
+        const todo = {
+            title: title,
+            description: description,
+            details: details
+        };
 
-    // Check if response succeeded
-    if(response.ok){
-        alert("To Do Saved!");
-        window.location.href = "/index.html";
-    } else {
-        alert("Failed to create To Do");
-    }
-}
+        const response = await fetch(`${API_BASE}/add`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(todo)
+        });
 
-async function retrieveToDos(){
-    const response = await fetch("/api/v1/todo/");
-
-    if(response.ok){
-        const todos = await response.json();
-
-        //can use todos.length to check if there are to dos already
-
-        const todoContainer = document.getElementById("todoContainer");
-        for(const todo of todos){
-            const todoCard = document.createElement("div");
-            todoCard.className = "todoCard";
-
-            const title = document.createElement("h3");
-            const titleLink = document.createElement("a");
-            titleLink.href = "/todo.html?id=" + todo.id;
-            titleLink.textContent = todo.title;
-            title.appendChild(titleLink);
-
-            const description = document.createElement("p");
-            description.textContent = todo.description;
-
-            const status = document.createElement("p");
-            status.textContent = todo.statusDescription;
-
-            todoCard.appendChild(title);
-            todoCard.appendChild(description);
-            todoCard.appendChild(status);
-
-            todoContainer.appendChild(todoCard);
-        }
-    } else {
-        console.log("Failed to retrieve To Dos");
-        return;
-    }
-}
-
-async function retrieveTodoById(){
-    const params = new URLSearchParams(window.location.search);
-    const todoId = params.get("id");
-
-    const response = await fetch("/api/v1/todo/" + todoId);
-    const todo = await response.json();
-
-    const editButton = document.getElementById("editButton");
-    editButton.onclick = function(){
-        window.location.href = "/editTodo.html?id=" + todoId;
-    }
-
-    const deleteButton = document.getElementById("deleteButton");
-    deleteButton.onclick = async function(){
-        const isDelete = confirm("Are you sure you want to delete?");
-        if(isDelete){
-          const deleteResponse = await fetch("/api/v1/todo/" + todoId, {method: "DELETE"});
-
-          if(deleteResponse.ok){
-              window.location.href = "/index.html";
-          } else {
-              console.log("Error deleting to do");
-          }
-        } else {
+        if (response.ok) {
+            alert("To Do Saved!");
+            window.location.href = "/index.html";
             return;
         }
+
+        alert("Failed to create To Do");
+    } catch (error) {
+        console.log("Error creating todo:", error);
+        alert("Could not save To Do");
     }
-
-    const todoBox = document.getElementById("todoBox");
-
-    const title = document.createElement("h3");
-    title.textContent = todo.title;
-
-    const description = document.createElement("p");
-    description.textContent = todo.description;
-
-    const status = document.createElement("p");
-    status.textContent = todo.statusDescription;
-
-    const details = document.createElement("p");
-    details.textContent = todo.details;
-
-    todoBox.appendChild(title);
-    todoBox.appendChild(description);
-    todoBox.appendChild(status);
-    todoBox.appendChild(details);
 }
 
+// Read all todos
+async function retrieveToDos() {
+    const todoContainer = document.getElementById("todoContainer");
+    if (!todoContainer) {
+        return;
+    }
 
-async function editTodo(){
-    const params = new URLSearchParams(window.location.search);
-    const todoId = params.get("id");
+    clearElement(todoContainer);
 
-    try{
-        const response = await fetch("/api/v1/todo/" + todoId);
+    try {
+        const response = await fetch(`${API_BASE}/`);
 
-        if(!response.ok){
-            console.log("Error with API");
+        if (!response.ok) {
+            todoContainer.innerHTML = "<p>Failed to retrieve To Dos.</p>";
+            return;
+        }
+
+        const todos = await response.json();
+
+        if (!Array.isArray(todos) || todos.length === 0) {
+            todoContainer.innerHTML = "<p>No To Dos yet.</p>";
+            return;
+        }
+
+        for (const todo of todos) {
+            todoContainer.appendChild(renderTodoCard(todo));
+        }
+    } catch (error) {
+        console.log("Error retrieving todos:", error);
+        todoContainer.innerHTML = "<p>Could not reach the server.</p>";
+    }
+}
+
+// Retrieve single to do
+async function retrieveTodoById() {
+    const todoId = getTodoIdFromUrl();
+
+    if (!todoId) {
+        console.log("Missing todo id");
+        window.location.href = "/index.html";
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/${todoId}`);
+
+        if (!response.ok) {
+            console.log("Todo not found");
             window.location.href = "/index.html";
+            return;
         }
 
         const todo = await response.json();
 
-        var title = document.getElementById("title");
-        title.value = todo.title;
-
-        var description = document.getElementById("description");
-        description.value = todo.description;
-
-        var statusSelect = document.getElementById("status");
-        const todoStatusesResponse = await fetch("/api/v1/todo/statuses");
-        const statuses = await todoStatusesResponse.json();
-
-        for(const status of statuses){
-            var option = document.createElement("option");
-            option.value = status.statusCode;
-            option.textContent = status.statusDescription;
-            statusSelect.appendChild(option);
+        const editButton = document.getElementById("editButton");
+        if (editButton) {
+            editButton.onclick = function () {
+                window.location.href = `/editTodo.html?id=${todoId}`;
+            };
         }
 
-        statusSelect.value = todo.status;
-
-        var details = document.getElementById("details");
-        details.value = todo.details;
-
-        var saveButton = document.getElementById("saveButton");
-        saveButton.onclick = async function(){
-            title = document.getElementById("title").value;
-            description = document.getElementById("description").value;
-            status = document.getElementById("status").value;
-            details = document.getElementById("details").value;
-
-            const todoUpdated = {
-                title: title,
-                description: description,
-                status: status,
-                details: details
-            }
-
-            const todoUpdateResponse = await fetch("/api/v1/todo/update/" + todoId, {method: "PUT", headers: {"Content-Type": "application/json"}, body: JSON.stringify(todoUpdated)});
-
-            if(todoUpdateResponse.ok){
-                window.location.href = "/todo.html?id=" + todoId;
-            }
+        const deleteButton = document.getElementById("deleteButton");
+        if (deleteButton) {
+            deleteButton.onclick = function () {
+                deleteTodo(todoId);
+            };
         }
 
+        renderTodoDetails(todo);
     } catch (error) {
-        console.log("Error: " + error);
+        console.log("Error retrieving todo by id:", error);
         window.location.href = "/index.html";
+    }
+}
+
+// Update to do
+async function editTodo() {
+    const todoId = getTodoIdFromUrl();
+
+    if (!todoId) {
+        console.log("Missing todo id");
+        window.location.href = "/index.html";
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/${todoId}`);
+
+        if (!response.ok) {
+            console.log("Error with API");
+            window.location.href = "/index.html";
+            return;
+        }
+
+        const todo = await response.json();
+
+        const titleInput = document.getElementById("title");
+        const descriptionInput = document.getElementById("description");
+        const detailsInput = document.getElementById("details");
+        const statusSelect = document.getElementById("status");
+        const saveButton = document.getElementById("saveButton");
+
+        if (!titleInput || !descriptionInput || !detailsInput || !statusSelect) {
+            console.log("Missing edit form fields");
+            return;
+        }
+
+        titleInput.value = todo.title ?? "";
+        descriptionInput.value = todo.description ?? "";
+        detailsInput.value = todo.details ?? "";
+
+        await populateStatusSelect(statusSelect, todo.status);
+
+        if (saveButton) {
+            saveButton.onclick = async function () {
+                const todoUpdated = {
+                    title: titleInput.value,
+                    description: descriptionInput.value,
+                    status: statusSelect.value,
+                    details: detailsInput.value
+                };
+
+                try {
+                    const todoUpdateResponse = await fetch(`${API_BASE}/update/${todoId}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(todoUpdated)
+                    });
+
+                    if (todoUpdateResponse.ok) {
+                        window.location.href = `/todo.html?id=${todoId}`;
+                        return;
+                    }
+
+                    alert("Failed to update To Do");
+                } catch (error) {
+                    console.log("Error updating todo:", error);
+                    alert("Could not update To Do");
+                }
+            };
+        }
+    } catch (error) {
+        console.log("Error:", error);
+        window.location.href = "/index.html";
+    }
+}
+
+// Delete to do
+async function deleteTodo(todoId) {
+    const isDelete = confirm("Are you sure you want to delete?");
+    if (!isDelete) {
+        return;
+    }
+
+    try {
+        const deleteResponse = await fetch(`${API_BASE}/${todoId}`, {
+            method: "DELETE"
+        });
+
+        if (deleteResponse.ok) {
+            window.location.href = "/index.html";
+            return;
+        }
+
+        console.log("Error deleting to do");
+    } catch (error) {
+        console.log("Error deleting todo:", error);
+    }
+}
+
+// helper functions
+function getTodoIdFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("id");
+}
+
+function clearElement(element) {
+    if (element) {
+        element.innerHTML = "";
+    }
+}
+
+function createTextElement(tagName, text) {
+    const element = document.createElement(tagName);
+    element.textContent = text ?? "";
+    return element;
+}
+
+function renderTodoCard(todo) {
+    const todoCard = document.createElement("div");
+    todoCard.className = "todoCard";
+    todoCard.dataset.todoId = todo.id;
+
+    const titleHeading = document.createElement("h3");
+    const titleLink = document.createElement("a");
+    titleLink.href = `/todo.html?id=${todo.id}`;
+    titleLink.textContent = todo.title ?? "";
+    titleHeading.appendChild(titleLink);
+
+    const description = createTextElement("p", todo.description);
+    const status = createTextElement("p", todo.statusDescription);
+
+    todoCard.appendChild(titleHeading);
+    todoCard.appendChild(description);
+    todoCard.appendChild(status);
+
+    return todoCard;
+}
+
+function renderTodoDetails(todo) {
+    const todoDetails = document.getElementById("todoDetails");
+    if (!todoDetails) {
+        return;
+    }
+
+    clearElement(todoDetails);
+
+    const title = createTextElement("h3", todo.title);
+    const description = createTextElement("p", todo.description);
+    const status = createTextElement("p", todo.statusDescription);
+    const details = createTextElement("p", todo.details);
+
+    todoDetails.appendChild(title);
+    todoDetails.appendChild(description);
+    todoDetails.appendChild(status);
+    todoDetails.appendChild(details);
+}
+
+async function populateStatusSelect(statusSelect, selectedStatusCode) {
+    clearElement(statusSelect);
+
+    const todoStatusesResponse = await fetch(`${API_BASE}/statuses`);
+
+    if (!todoStatusesResponse.ok) {
+        throw new Error("Failed to load todo statuses");
+    }
+
+    const statuses = await todoStatusesResponse.json();
+
+    for (const todoStatus of statuses) {
+        const option = document.createElement("option");
+        option.value = todoStatus.statusCode;
+        option.textContent = todoStatus.statusDescription;
+        statusSelect.appendChild(option);
+    }
+
+    if (selectedStatusCode) {
+        statusSelect.value = selectedStatusCode;
     }
 }
