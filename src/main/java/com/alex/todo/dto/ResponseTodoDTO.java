@@ -11,5 +11,6 @@ public class ResponseTodoDTO {
     private String title;
     private String description;
     private ToDoStatus status;
+    private String statusDescription;
     private String details;
 }

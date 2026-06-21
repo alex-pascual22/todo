@@ -15,6 +15,7 @@ public class ToDoMapper {
         responseTodoDTO.setTitle(todoEntity.getTitle());
         responseTodoDTO.setDescription(todoEntity.getDescription());
         responseTodoDTO.setStatus(todoEntity.getStatus());
+        responseTodoDTO.setStatusDescription(todoEntity.getStatus().getDescription());
         responseTodoDTO.setDetails(todoEntity.getDetails());
         return responseTodoDTO;
     }

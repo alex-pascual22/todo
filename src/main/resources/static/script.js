@@ -46,7 +46,7 @@ async function retrieveToDos(){
             description.textContent = todo.description;
 
             const status = document.createElement("p");
-            status.textContent = todo.status;
+            status.textContent = todo.statusDescription;
 
             todoCard.appendChild(title);
             todoCard.appendChild(description);
@@ -97,7 +97,7 @@ async function retrieveTodoById(){
     description.textContent = todo.description;
 
     const status = document.createElement("p");
-    status.textContent = todo.status;
+    status.textContent = todo.statusDescription;
 
     const details = document.createElement("p");
     details.textContent = todo.details;
@@ -129,15 +129,24 @@ async function editTodo(){
         var description = document.getElementById("description");
         description.value = todo.description;
 
-        var status = document.getElementById("status");
-        status.value = todo.status;
+        var statusSelect = document.getElementById("status");
+        const todoStatusesResponse = await fetch("/api/v1/todo/statuses");
+        const statuses = await todoStatusesResponse.json();
+
+        for(const status of statuses){
+            var option = document.createElement("option");
+            option.value = status.statusCode;
+            option.textContent = status.statusDescription;
+            statusSelect.appendChild(option);
+        }
+
+        statusSelect.value = todo.status;
 
         var details = document.getElementById("details");
         details.value = todo.details;
 
         var saveButton = document.getElementById("saveButton");
         saveButton.onclick = async function(){
-
             title = document.getElementById("title").value;
             description = document.getElementById("description").value;
             status = document.getElementById("status").value;

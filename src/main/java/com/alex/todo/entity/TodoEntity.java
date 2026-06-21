@@ -23,6 +23,7 @@ public class TodoEntity {
     @Column(name="TODO_DESCR", length = 50)
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="TODO_STATUS", length = 20)
     private ToDoStatus status;
 
