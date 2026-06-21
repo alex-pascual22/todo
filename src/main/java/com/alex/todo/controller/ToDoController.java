@@ -2,12 +2,19 @@ package com.alex.todo.controller;
 
 import com.alex.todo.dto.CreateTodoDTO;
 import com.alex.todo.dto.ResponseTodoDTO;
+import com.alex.todo.dto.ToDoStatusDTO;
 import com.alex.todo.dto.UpdateToDoDTO;
+import com.alex.todo.enums.ToDoStatus;
 import com.alex.todo.service.ToDoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static java.lang.System.in;
 
 @RestController
 @RequestMapping("/api/v1/todo")
@@ -58,5 +65,17 @@ public class ToDoController {
             return new ResponseEntity<>(responseTodoDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/statuses")
+    public List<ToDoStatusDTO> getToDoStatuses() {
+        List<ToDoStatusDTO> toDoStatusDTOList = new ArrayList<>();
+        for(ToDoStatus status : ToDoStatus.values()){
+            ToDoStatusDTO toDoStatusDTO = new ToDoStatusDTO();
+            toDoStatusDTO.setStatusCode(status.name());
+            toDoStatusDTO.setStatusDescription(status.getDescription());
+            toDoStatusDTOList.add(toDoStatusDTO);
+        }
+        return toDoStatusDTOList;
     }
 }
