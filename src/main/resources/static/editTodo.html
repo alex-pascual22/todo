@@ -1,49 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit To Do</title>
-    <link rel="stylesheet" href="style.css"/>
-    <script src="script.js" defer></script>
-</head>
-<body onload="editTodo()">
-  <!--Header-->
-  <div class="header">
-    <div>
-      <h1><a href="index.html">Simple To Do App</a></h1>
-    </div>
-    <div>
-      <button onclick="window.location.href='/addToDo.html'">Add ToDo</button>
-    </div>
-  </div>
-
-  <!--Form-->
-  <div class="formBox">
-    <h3>Edit To Do</h3>
-
-    <div>
-      <label>Title: </label>
-      <input type="text" id="title"/>
+  <head>
+      <meta charset="UTF-8">
+      <title>Edit To Do</title>
+      <link rel="stylesheet" href="style.css"/>
+      <script src="script.js" defer></script>
+  </head>
+  <body onload="editTodo()">
+    <div class="header">
+      <div>
+        <h1><a href="index.html">Simple To Do App</a></h1>
+      </div>
+      <div>
+        <button onclick="window.location.href='/addToDo.html'">Add ToDo</button>
+      </div>
     </div>
 
-    <div>
-      <label>Description: </label>
-      <input type="text" id="description"/>
+    <div class="formBox">
+      <h3>Edit To Do</h3>
+
+      <div>
+        <label>Title: </label>
+        <input type="text" id="title"/>
+      </div>
+
+      <div>
+        <label>Description: </label>
+        <input type="text" id="description"/>
+      </div>
+
+      <div>
+        <label>Status: </label>
+        <select id="status">
+        </select>
+      </div>
+
+      <div>
+        <label>Details: </label>
+        <textarea id="details"></textarea>
+      </div>
+
+      <button id="saveButton">Save</button>
     </div>
-
-    <div>
-      <label>Status: </label>
-      <select id="status">
-      </select>
-    </div>
-
-    <div>
-      <label>Details: </label>
-      <textarea id="details"></textarea>
-    </div>
-
-    <button id="saveButton">Save</button>
-  </div>
-
-</body>
+  </body>
 </html>
