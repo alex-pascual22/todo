@@ -1,5 +1,6 @@
 package com.alex.todo.entity;
 
+import com.alex.todo.enums.ToDoStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,7 +24,7 @@ public class TodoEntity {
     private String description;
 
     @Column(name="TODO_STATUS", length = 20)
-    private String status;
+    private ToDoStatus status;
 
     @Column(name="TODO_DETAILS")
     private String details;

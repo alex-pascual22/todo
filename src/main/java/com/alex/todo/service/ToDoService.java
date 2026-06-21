@@ -4,6 +4,7 @@ import com.alex.todo.dto.CreateTodoDTO;
 import com.alex.todo.dto.ResponseTodoDTO;
 import com.alex.todo.dto.UpdateToDoDTO;
 import com.alex.todo.entity.TodoEntity;
+import com.alex.todo.enums.ToDoStatus;
 import com.alex.todo.mapper.ToDoMapper;
 import com.alex.todo.repository.ToDoRepository;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class ToDoService {
         }
 
         todoEntity = toDoMapper.convertCreateDtoToEntity(createTodoDTO);
-        todoEntity.setStatus("Not yet started");
+        todoEntity.setStatus(ToDoStatus.NOT_YET_STARTED);
         todoEntity = toDoRepository.save(todoEntity);
 
         responseTodoDTO = toDoMapper.convertEntityToResponseDto(todoEntity);
