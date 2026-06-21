@@ -1,32 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>To Do</title>
-    <link rel="stylesheet" href="style.css"/>
-    <script src="script.js" defer></script>
-</head>
-<body onload="retrieveTodoById()">
-  <!--Header-->
-  <div class="header">
-    <div>
-      <h1><a href="index.html">Simple To Do App</a></h1>
-    </div>
-    <div>
-      <button onclick="window.location.href='/addToDo.html'">Add ToDo</button>
-    </div>
-  </div>
+    <head>
+        <meta charset="UTF-8">
+        <title>To Do</title>
+        <link rel="stylesheet" href="style.css"/>
+        <script src="script.js" defer></script>
+    </head>
+    <body onload="retrieveTodoById()">
+      <div class="header">
+        <div>
+          <h1><a href="index.html">Simple To Do App</a></h1>
+        </div>
+        <div>
+          <button onclick="window.location.href='/addToDo.html'">Add ToDo</button>
+        </div>
+      </div>
 
-  <!--To Do Body  -->
-  <div class="todoBox" id="todoBox">
-    <div id = "todoActions">
-      <button id="editButton">Edit</button>
-      <button id="deleteButton">Delete</button>
-    </div>
-    <div id="todoDetails"></div>
-  </div>
-
-  <!--Footer-->
-  <div class="footer"></div>
-</body>
+      <div class="todoBox" id="todoBox">
+        <div id = "todoActions">
+          <button id="editButton">Edit</button>
+          <button id="deleteButton">Delete</button>
+        </div>
+        <div id="todoDetails"></div>
+      </div>
+    </body>
 </html>

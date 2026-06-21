@@ -1,26 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Todo App</title>
-    <link rel="stylesheet" href="style.css"/>
-    <script src="script.js" defer></script>
-</head>
-<body onload="retrieveToDos()">
-    <!--Header-->
-    <div class="header">
-        <div>
-            <h1><a href="index.html">Simple To Do App</a></h1>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Todo App</title>
+        <link rel="stylesheet" href="style.css"/>
+        <script src="script.js" defer></script>
+    </head>
+    <body onload="retrieveToDos()">
+        <div class="header">
+            <div>
+                <h1><a href="index.html">Simple To Do App</a></h1>
+            </div>
+            <div>
+                <button onclick="window.location.href='/addToDo.html'">Add ToDo</button>
+            </div>
         </div>
-        <div>
-            <button onclick="window.location.href='/addToDo.html'">Add ToDo</button>
-        </div>
-    </div>
 
-    <!--To Dos-->
-    <div class="todoContainer" id="todoContainer"></div>
-
-    <!--Footer-->
-    <div class="footer"></div>
-</body>
+        <div class="todoContainer" id="todoContainer"></div>
+    </body>
+</html>

@@ -1,44 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="style.css"/>
-    <script src="script.js" defer></script>
-    <title>Add To Do</title>
-</head>
-<body>
-<!--Header-->
-<div class="header">
-    <div>
-        <h1><a href="index.html">Simple To Do App</a></h1>
-    </div>
-    <div>
-        <button onclick="window.location.href='/addToDo.html'">Add ToDo</button>
-    </div>
-</div>
-
-<div>
-    <h2>Add To Do</h2>
-</div>
-
-<div>
-    <form id="todoForm" class="formBox">
-        <div>
-            <label>Title: </label>
-            <input type="text" id="title"/>
-        </div>
-        <div>
-            <label>Description: </label>
-            <input type="text" id="description"/>
-        </div>
-        <div>
-            <label>Details: </label>
-            <textarea id="details"></textarea>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="style.css"/>
+        <script src="script.js" defer></script>
+        <title>Add To Do</title>
+    </head>
+    <body>
+        <div class="header">
+            <div>
+                <h1><a href="index.html">Simple To Do App</a></h1>
+            </div>
+            <div>
+                <button onclick="window.location.href='/addToDo.html'">Add ToDo</button>
+            </div>
         </div>
 
-        <button type="button" onclick="createTodo()">Save</button>
-    </form>
-</div>
+        <div>
+            <h2>Add To Do</h2>
+        </div>
 
-</body>
+        <div>
+            <form id="todoForm" class="formBox">
+                <div>
+                    <label>Title: </label>
+                    <input type="text" id="title"/>
+                </div>
+                <div>
+                    <label>Description: </label>
+                    <input type="text" id="description"/>
+                </div>
+                <div>
+                    <label>Details: </label>
+                    <textarea id="details"></textarea>
+                </div>
+
+                <button type="button" onclick="createTodo()">Save</button>
+            </form>
+        </div>
+    </body>
 </html>

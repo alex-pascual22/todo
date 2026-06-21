@@ -8,11 +8,9 @@ import com.alex.todo.enums.ToDoStatus;
 import com.alex.todo.mapper.ToDoMapper;
 import com.alex.todo.repository.ToDoRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import static java.util.Objects.isNull;
 
 @Service
