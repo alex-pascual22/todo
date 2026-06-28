@@ -7,11 +7,10 @@ A simple RESTful Todo Management application built using Spring Boot.
 - Spring Data JPA
 - H2 Database
 - Lombok
-- Maven
 
 ## Features
 - Create Todo
-- View Todo/s
+- Retrieve Todos
 - Update Todo
 - Delete Todo
 
